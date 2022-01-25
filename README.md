@@ -5,6 +5,13 @@ Prometheus service discovery using nacos and `file_sd_config`.
 ----
 ## Install
 
+### CLI
+
+```shell
+./prometheus-nacos-sd --nacos.address=127.0.0.1:8848 --nacos.namespaceId=6440ac2f-470c-42f4-a845-d6fc7186edbc --output.file=/home/ec2-user/project/prometheus/prometheus/jobs/nacos_sd_dev.json
+```
+
+
 ### Docker
 
 ```
