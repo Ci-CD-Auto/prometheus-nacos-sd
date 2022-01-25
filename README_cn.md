@@ -1,11 +1,12 @@
-# prometheus-nacos-sd [[中文介绍](README_cn.md)]
+# prometheus-nacos-sd
 
-Prometheus service discovery using nacos and `file_sd_config`.
+Prometheus 通过`file_sd_config`服务自动发现
 
 ----
-## Install
+## 安装方式
 
 ### Docker
+
 
 ```
 docker pull houshuai0816/prometheus-nacos-sd:1.0.0
@@ -14,9 +15,9 @@ ls /tmp/nacos_sd_dev.json
 ```
 
 ---- 
-## Generated json format
+## 生成的json文件
 
-generated json should be follow prometheus `file_sd_config` format like below:
+生成的文件应存放在 prometheus `file_sd_config` 文件下
 
 ```json
 [
@@ -50,28 +51,9 @@ generated json should be follow prometheus `file_sd_config` format like below:
 ]
 ```
 
-## about prometheus metric path
-```
-we set __metrics_path__ to "/actuator/prometheus" by default.
-but if you set metadata with key 'context_path' in your application metadata like below , we will rewrite it to "content_path/actuator/prometheus"
-```
+## prometheus 设置例子 
 
-```yaml
-spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.1.1:8848
-        namespace: dev
-        metadata:
-          context_path: ${server.servlet.context-path:/}
-```
-
-
-
-## Example prometheus settings
-
-The part of your `prometheus.yml` is probably as follows.
+在 `prometheus.yml` 中进行修改长如下例子内容 
 
 ```yaml
   scrape_configs:

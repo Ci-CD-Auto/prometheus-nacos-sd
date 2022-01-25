@@ -44,7 +44,7 @@ type NacosSDConfig struct {
 // Discovery retrieves target information from a Consul server and updates them via watches.
 type NacosDiscovery struct {
 	Address         string
-	Namespace       string
+	NamespaceId     string
 	Group           string
 	Username        string
 	Password        string
@@ -119,7 +119,7 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 
 		nacosNamingClient := ctx.Value("nacosClient").(naming_client.INamingClient)
 		serviceInfos, err := nacosNamingClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
-			NameSpace: d.Namespace,
+			NameSpace: d.NamespaceId,
 			PageNo:    1,
 			PageSize:  1000,
 		})
@@ -156,7 +156,7 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 				level.Error(d.Logger).Log("msg", "Error getting services info from nacos", "service", servicename, "err", err)
 				break
 			}
-			tg, err := d.parseServiceInstance(Service, servicename, d.Namespace, d.Group)
+			tg, err := d.parseServiceInstance(Service, servicename, d.NamespaceId, d.Group)
 			if err != nil {
 				level.Error(d.Logger).Log("msg", "Error parsing services instance", "service", servicename, "err", err)
 				break
@@ -190,7 +190,7 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 func NewDiscovery(conf NacosDiscovery) (*NacosDiscovery, error) {
 	cd := &NacosDiscovery{
 		Address:         conf.Address,
-		Namespace:       conf.Namespace,
+		NamespaceId:     conf.NamespaceId,
 		Group:           conf.Group,
 		RefreshInterval: conf.RefreshInterval,
 		TagSeparator:    conf.TagSeparator,
@@ -222,11 +222,11 @@ func createNacosNamingClient(conf NacosDiscovery) naming_client.INamingClient {
 		},
 	}
 	//currentProcessPath, _ := os.Executable()
-	//cacheDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "cache" + string(os.PathSeparator) + conf.Namespace
-	//logDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "log" + string(os.PathSeparator) + conf.Namespace
+	//cacheDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "cache" + string(os.PathSeparator) + conf.NamespaceId
+	//logDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "log" + string(os.PathSeparator) + conf.NamespaceId
 
 	clientConfig := constant.ClientConfig{
-		NamespaceId:          conf.Namespace,
+		NamespaceId:          conf.NamespaceId,
 		TimeoutMs:            3000,
 		NotLoadCacheAtStart:  true,
 		UpdateCacheWhenEmpty: true,

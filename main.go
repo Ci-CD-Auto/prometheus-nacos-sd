@@ -15,7 +15,7 @@ var (
 	kp              = kingpin.New("nacos sd adapter usage", "Tool to generate file_sd target files for implemented nacos SD mechanisms.")
 	outputFile      = kp.Flag("output.file", "Output file for file_sd compatible file.").Default("nacos_sd.json").String()
 	listenAddress   = kp.Flag("nacos.address", "The address Nacos listening on for requests.").Default("localhost:8848").String()
-	namespace       = kp.Flag("nacos.namespace", "nacos public").Default("public").String()
+	namespaceId     = kp.Flag("nacos.namespaceId", "nacos public").Default("public").String()
 	group           = kp.Flag("nacos.group", "nacos group").Default("DEFAULT_GROUP").String()
 	refreshInterval = kp.Flag("refresh.interval", "generate interval").Default("60").Int()
 	logger          log.Logger
@@ -36,7 +36,7 @@ func main() {
 	// NOTE: create an instance of your new SD implementation here.
 	cfg := nacos.NacosDiscovery{
 		Address:         *listenAddress,
-		Namespace:       *namespace,
+		NamespaceId:     *namespaceId,
 		Group:           *group,
 		TagSeparator:    ",",
 		RefreshInterval: *refreshInterval,
