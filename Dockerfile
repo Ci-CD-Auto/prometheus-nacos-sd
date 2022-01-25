@@ -5,8 +5,8 @@ COPY ./ ./
 
 RUN   go env -w GO111MODULE=on && \
       go env -w GOPROXY=https://goproxy.io && \
-      go mod vendor && \
-      GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags "-w -s" -o /prometheus-nacos-sd main.go
+      go mod tidy && \
+      go build -ldflags "-w -s" -o /prometheus-nacos-sd main.go
 
 FROM alpine:edge
 RUN apk add --update --no-cache ca-certificates
