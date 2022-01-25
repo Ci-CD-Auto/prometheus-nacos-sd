@@ -69,3 +69,5 @@ ls /tmp/nacos_sd_dev.json
           action: labeldrop
 ```
 
+## 资料
+1. [prometheus-sd](https://github.com/prometheus/prometheus/tree/main/documentation/examples/custom-sd)

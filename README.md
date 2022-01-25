@@ -86,4 +86,3 @@ The part of your `prometheus.yml` is probably as follows.
         - regex: 'preserved_register_source'
           action: labeldrop
 ```
-
