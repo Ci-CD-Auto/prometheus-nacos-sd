@@ -27,6 +27,8 @@ var (
 	metricsPathLabel = model.MetricsPathLabel
 	jobLabel         = model.JobLabel
 	sourceLabel      = "source"
+	taskName         = "task_name"
+	taskGroup        = "task_group"
 	//instanceLabel       = model.InstanceLabel
 )
 
@@ -97,7 +99,9 @@ func (d *NacosDiscovery) parseServiceInstance(Service nacosModel.Service, servic
 			model.LabelName(groupLabel):       model.LabelValue(group),
 			model.LabelName(metricsPathLabel): model.LabelValue(realMetraicsPath),
 			model.LabelName(jobLabel):         model.LabelValue(instance.ServiceName),
-			model.LabelName(sourceLabel):      "nacos",
+			model.LabelName(sourceLabel):      model.LabelValue("nacos"),
+			model.LabelName(taskName):         model.LabelValue(serviceName),
+			model.LabelName(taskGroup):        model.LabelValue(namespace),
 		}
 		tgroup.Labels = labels
 
