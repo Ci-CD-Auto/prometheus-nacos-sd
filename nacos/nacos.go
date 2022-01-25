@@ -244,12 +244,5 @@ func createNacosNamingClient(conf NacosDiscovery) naming_client.INamingClient {
 	if err != nil {
 		return nil
 	}
-	data, _ := nacosNamingClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
-		NameSpace: conf.Namespace,
-		PageNo:    1,
-		PageSize:  100,
-	})
-	fmt.Printf("ss", data)
-
 	return nacosNamingClient
 }
