@@ -50,25 +50,6 @@ generated json should be follow prometheus `file_sd_config` format like below:
 ]
 ```
 
-## about prometheus metric path
-```
-we set __metrics_path__ to "/actuator/prometheus" by default.
-but if you set metadata with key 'context_path' in your application metadata like below , we will rewrite it to "content_path/actuator/prometheus"
-```
-
-```yaml
-spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.1.1:8848
-        namespace: dev
-        metadata:
-          context_path: ${server.servlet.context-path:/}
-```
-
-
-
 ## Example prometheus settings
 
 The part of your `prometheus.yml` is probably as follows.
