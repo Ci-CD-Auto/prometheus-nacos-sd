@@ -15,8 +15,6 @@ import (
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/util/strutil"
 	"net"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -122,9 +120,8 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 		nacosNamingClient := ctx.Value("nacosClient").(naming_client.INamingClient)
 		serviceInfos, err := nacosNamingClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
 			NameSpace: d.Namespace,
-			GroupName: d.Group,
-			PageNo:    uint32(1),
-			PageSize:  uint32(1000),
+			PageNo:    1,
+			PageSize:  1000,
 		})
 
 		if err != nil {
@@ -216,34 +213,43 @@ func createNacosNamingClient(conf NacosDiscovery) naming_client.INamingClient {
 
 	address := strings.Split(conf.Address, ":")
 	port, _ := strconv.ParseUint(address[1], 10, 64)
-	var serverConfigs []constant.ServerConfig
-	serverConfig := constant.ServerConfig{
-		ContextPath: "/nacos",
-		IpAddr:      address[0],
-		Port:        port,
+	serverConfigs := []constant.ServerConfig{
+		{
+			IpAddr:      address[0],
+			ContextPath: "/nacos",
+			Port:        port,
+			Scheme:      "http",
+		},
 	}
-
-	currentProcessPath, _ := os.Executable()
-	cacheDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "cache" + string(os.PathSeparator) + conf.Namespace
-	logDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "log" + string(os.PathSeparator) + conf.Namespace
+	//currentProcessPath, _ := os.Executable()
+	//cacheDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "cache" + string(os.PathSeparator) + conf.Namespace
+	//logDir := os.TempDir() + string(os.PathSeparator) + filepath.Base(currentProcessPath) + string(os.PathSeparator) + "log" + string(os.PathSeparator) + conf.Namespace
 
 	clientConfig := constant.ClientConfig{
 		NamespaceId:          conf.Namespace,
-		Username:             conf.Username,
-		Password:             conf.Password,
-		TimeoutMs:            uint64(3000),
+		TimeoutMs:            3000,
 		NotLoadCacheAtStart:  true,
 		UpdateCacheWhenEmpty: true,
-		CacheDir:             cacheDir,
-		LogDir:               logDir,
+		Username:             "nacos",
+		Password:             "nacos",
+		LogDir:               "/tmp/nacos/log",
+		CacheDir:             "/tmp/nacos/cache",
 		LogLevel:             "debug",
 	}
-	nacosNamingClient, err := clients.CreateNamingClient(map[string]interface{}{
-		"serverConfigs": append(serverConfigs, serverConfig),
-		"clientConfig":  clientConfig,
+	nacosNamingClient, err := clients.NewNamingClient(vo.NacosClientParam{
+		ClientConfig:  &clientConfig,
+		ServerConfigs: serverConfigs,
 	})
+
 	if err != nil {
 		return nil
 	}
+	data, _ := nacosNamingClient.GetAllServicesInfo(vo.GetAllServiceInfoParam{
+		NameSpace: conf.Namespace,
+		PageNo:    1,
+		PageSize:  100,
+	})
+	fmt.Printf("ss", data)
+
 	return nacosNamingClient
 }

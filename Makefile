@@ -31,3 +31,7 @@ release: buildx
 	git tag v$(VERSION)
 	git push origin v$(VERSION)
 	ghr -u afghanistanyn v$(VERSION) bin/prometheus-nacos-sd_linux_amd64_v$(VERSION)
+
+docker_build:
+	docker build . --tag houshuai0816/prometheus-nacos-sd:1.0.0
+	docker push houshuai0816/prometheus-nacos-sd:1.0.0
