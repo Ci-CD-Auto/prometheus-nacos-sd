@@ -26,6 +26,7 @@ var (
 	groupLabel       = model.MetaLabelPrefix + "nacos_group"
 	metricsPathLabel = model.MetricsPathLabel
 	jobLabel         = model.JobLabel
+	sourceLabel      = "source"
 	//instanceLabel       = model.InstanceLabel
 )
 
@@ -96,6 +97,7 @@ func (d *NacosDiscovery) parseServiceInstance(Service nacosModel.Service, servic
 			model.LabelName(groupLabel):       model.LabelValue(group),
 			model.LabelName(metricsPathLabel): model.LabelValue(realMetraicsPath),
 			model.LabelName(jobLabel):         model.LabelValue(instance.ServiceName),
+			model.LabelName(sourceLabel):      "nacos",
 		}
 		tgroup.Labels = labels
 
@@ -146,6 +148,10 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 
 		newSourceList := make(map[string]bool)
 		for _, servicename := range srvs {
+			// 移除 go kratos 服务声明的服务内容
+			if strings.HasSuffix(servicename, ".http") || strings.HasSuffix(servicename, ".grpc") {
+				continue
+			}
 
 			Service, err := nacosNamingClient.GetService(vo.GetServiceParam{
 				ServiceName: servicename,
