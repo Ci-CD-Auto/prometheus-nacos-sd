@@ -8,5 +8,4 @@ RUN go mod vendor && \
 FROM alpine:edge
 RUN apk add --update --no-cache ca-certificates
 COPY --from=builder /prometheus-nacos-sd /prometheus-nacos-sd
-USER nobody
 ENTRYPOINT ["/prometheus-nacos-sd"]
