@@ -156,6 +156,9 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 			if strings.HasSuffix(servicename, ".http") || strings.HasSuffix(servicename, ".grpc") {
 				continue
 			}
+			if  servicename == "SkyWalking_OAP_Cluster" {
+				continue
+			}
 
 			Service, err := nacosNamingClient.GetService(vo.GetServiceParam{
 				ServiceName: servicename,
