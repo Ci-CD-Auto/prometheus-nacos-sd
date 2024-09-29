@@ -153,10 +153,10 @@ func (d *NacosDiscovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group
 		newSourceList := make(map[string]bool)
 		for _, servicename := range srvs {
 			// 移除 go kratos 服务声明的服务内容
-			if strings.HasSuffix(servicename, ".http") || strings.HasSuffix(servicename, ".grpc") {
+			if strings.HasSuffix(servicename, ".http") || strings.HasSuffix(servicename, ".grpc") || strings.HasPrefix(servicename, "providers:") {
 				continue
 			}
-			if  servicename == "SkyWalking_OAP_Cluster" {
+			if servicename == "SkyWalking_OAP_Cluster" {
 				continue
 			}
 
